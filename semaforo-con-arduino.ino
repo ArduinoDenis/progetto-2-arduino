@@ -1,135 +1,79 @@
-/* Arduino semaforo con chiamata pedoni
+// Arduino Traffic Light with Pedestrian Call
 
- 
+// Pin assignments for traffic lights
+const int greenCarPin = 2;   // Green light for cars
+const int yellowCarPin = 3;  // Yellow light for cars (optional)
+const int redCarPin = 4;     // Red light for cars
+const int greenPedestrianPin = 5;  // Green light for pedestrians
+const int redPedestrianPin = 6;    // Red light for pedestrians
 
-*/
+// Pin assignments for push buttons
+const int pedestrianButtonPin = 8; // Pedestrian button
+const int carButtonPin = 9;        // Car button
 
- 
-
-int vm = 2;   //sono delle abbreviazioni: vm=verde macchine
-
-int gm = 3;
-
-int rm = 4;
-
-int vp = 5;
-
-int gp = 6;
-
-int rp = 7;
-
-int pulsante1 = 8;
-
-int stato_pulsante1 = 0;
-
-int pulsante2 = 9;
-
-int stato_pulsante2 = 0;
-
- 
+// Variables to store button states
+int pedestrianButtonState = 0;
+int carButtonState = 0;
 
 void setup() {
-
-pinMode(vm, OUTPUT);
-
-pinMode(gm, OUTPUT);
-
-pinMode(rm, OUTPUT);
-
-pinMode(vp, OUTPUT);
-
-pinMode(gp, OUTPUT);
-
-pinMode(rp, OUTPUT);
-
-pinMode(pulsante1, INPUT);
-
-pinMode(pulsante2, INPUT);
-
+  // Initialize pin modes
+  pinMode(greenCarPin, OUTPUT);
+  pinMode(yellowCarPin, OUTPUT);
+  pinMode(redCarPin, OUTPUT);
+  pinMode(greenPedestrianPin, OUTPUT);
+  pinMode(redPedestrianPin, OUTPUT);
+  pinMode(pedestrianButtonPin, INPUT);
+  pinMode(carButtonPin, INPUT);
 }
-
- 
 
 void loop() {
+  // Default state: Green for cars, Red for pedestrians
+  digitalWrite(greenCarPin, HIGH);
+  digitalWrite(redPedestrianPin, HIGH);
 
-digitalWrite (vm, HIGH);
+  // Read button states
+  pedestrianButtonState = digitalRead(pedestrianButtonPin);
+  carButtonState = digitalRead(carButtonPin);
 
-digitalWrite (rp, HIGH);
+  // Check if pedestrian button is pressed
+  if (pedestrianButtonState == HIGH) {
+    pedestrianSequence(); // Activate pedestrian crossing sequence
+  }
 
-stato_pulsante1=digitalRead(pulsante1);
-
-stato_pulsante2 = digitalRead(pulsante2);
-
-if (stato_pulsante1 == 1) {
-
-delay (3500);
-
-digitalWrite (gm, HIGH);
-
-digitalWrite (vm, LOW);
-
-delay (1500);
-
-digitalWrite (gm, LOW);
-
-digitalWrite (rm, HIGH);
-
-digitalWrite (rp, LOW);
-
-digitalWrite (vp, HIGH);
-
-delay (4000);
-
-digitalWrite (gp, HIGH);
-
-digitalWrite (vp, LOW);
-
-delay (1500);
-
-digitalWrite (gp, LOW);
-
-digitalWrite (rp, HIGH);
-
-digitalWrite (rm, LOW);
-
-digitalWrite (vm, HIGH);
-
+  // Check if car button is pressed
+  if (carButtonState == HIGH) {
+    carSequence(); // Activate car traffic sequence
+  }
 }
 
-if (stato_pulsante2 == 1) {
-
-delay (3500);
-
-digitalWrite (gm, HIGH);
-
-digitalWrite (vm, LOW);
-
-delay (1500);
-
-digitalWrite (gm, LOW);
-
-digitalWrite (rm, HIGH);
-
-digitalWrite (rp, LOW);
-
-digitalWrite (vp, HIGH);
-
-delay (4000);
-
-digitalWrite (gp, HIGH);
-
-digitalWrite (vp, LOW);
-
-delay (1500);
-
-digitalWrite (gp, LOW);
-
-digitalWrite (rp, HIGH);
-
-digitalWrite (rm, LOW);
-
-digitalWrite (vm, HIGH);
-
+// Function to control pedestrian crossing sequence
+void pedestrianSequence() {
+  delay(3500); // Wait for cars to stop
+  digitalWrite(greenCarPin, LOW); // Stop cars
+  delay(1500); // Delay for safety
+  digitalWrite(redCarPin, HIGH); // Turn red for cars
+  digitalWrite(greenPedestrianPin, HIGH); // Allow pedestrians to cross
+  delay(4000); // Pedestrian crossing time
+  digitalWrite(greenPedestrianPin, LOW); // Stop pedestrian crossing
+  delay(1500); // Delay before resetting lights
+  digitalWrite(redPedestrianPin, LOW); // Turn off pedestrian light
+  digitalWrite(redCarPin, LOW); // Turn off car red light
+  digitalWrite(greenCarPin, HIGH); // Allow cars to proceed
 }
 
+// Function to control car traffic sequence
+void carSequence() {
+  delay(3500); // Wait for pedestrian crossing
+  digitalWrite(greenCarPin, LOW); // Stop cars
+  delay(1500); // Delay for safety
+  digitalWrite(redCarPin, HIGH); // Turn red for cars
+  delay(1500); // Delay before allowing pedestrians to cross again
+  digitalWrite(redPedestrianPin, LOW); // Turn off pedestrian red light
+  digitalWrite(greenPedestrianPin, HIGH); // Allow pedestrians to cross
+  delay(4000); // Pedestrian crossing time
+  digitalWrite(greenPedestrianPin, LOW); // Stop pedestrian crossing
+  delay(1500); // Delay before resetting lights
+  digitalWrite(redPedestrianPin, HIGH); // Turn red for pedestrians
+  digitalWrite(redCarPin, LOW); // Turn off car red light
+  digitalWrite(greenCarPin, HIGH); // Allow cars to proceed
 }
