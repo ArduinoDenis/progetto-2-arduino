@@ -1,4 +1,4 @@
-```markdown
+markdown
 # Arduino Traffic Light with Pedestrian Call
 
 ## Documentation
@@ -8,4 +8,3 @@ For further information and detailed documentation, please refer to the [Documen
 ## License
 
 This script is released under the [MIT License](LICENSE).
-```
