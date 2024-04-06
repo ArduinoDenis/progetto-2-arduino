@@ -1,4 +1,3 @@
-markdown
 # Arduino Traffic Light with Pedestrian Call
 
 ## Documentation
